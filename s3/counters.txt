@@ -1,0 +1,15 @@
+Steelhead: 1
+Flyfish: 0
+Scrapper: 0
+Steel Eel: 0
+Stinger: 0
+Maws: 1
+Drizzler: 0
+Fish Stick: 0
+Flipper-Flopper: 0
+Big Shot: 0
+Slammin' Lid: 0
+Cohozuna: 1
+Horrorboros: 2
+
+Egg: 4
