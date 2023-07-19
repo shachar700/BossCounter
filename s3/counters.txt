@@ -1,4 +1,4 @@
-Steelhead: 0
+Steelhead: 4
 Flyfish: 0
 Scrapper: 0
 Steel Eel: 0
@@ -12,4 +12,4 @@ Slammin' Lid: 0
 Cohozuna: 0
 Horrorboros: 0
 
-Egg: 385
+Egg: 95

@@ -36,7 +36,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.io.File;
 
 import java.util.HashMap;
@@ -45,7 +44,6 @@ import java.util.Random;
 
 public class BossCounter extends Application {
 	private TextField[] labels = new TextField[13];		
-	private String[] eggNames = { "Power Egg", "Golden Egg" };
 	private String[] lesserNames = { "Smallfry", "Chum", "Cohock" };
 	private String[] extraNames = { "Snatcher", "Chinook", "Goldie", "Griller", "Mudmouth", "Mothership" };
 	private String[] bossNames = { "Steelhead", "Flyfish", "Scrapper", "Steel Eel", "Stinger", "Maws", "Drizzler",
@@ -56,12 +54,18 @@ public class BossCounter extends Application {
 	private Map<String, Integer> enteredCounts = new HashMap<>();
 	private int eggCount;
 	private Label eggCounterLabel;
-
+	private ImageView iconView;
+	private int r1,r2,r3,r4,r5; // thresholds
+	private int rb2,rb3,rb4,rb5; // random icons
+	private String lesser, extra, boss, king;
+	
 	@Override
 	public void start(@SuppressWarnings("exports") Stage primaryStage) {
 		VBox vbox = new VBox();
 		vbox.setSpacing(5);
-
+		
+		generateRandomNumbers();
+		
 		// Create the File menu
 		Menu fileMenu = new Menu("File");
 		MenuItem loadItem = new MenuItem("Load");
@@ -209,51 +213,28 @@ public class BossCounter extends Application {
 
 	    // Create the Cohozuna icon
 	    Image cohozunaIcon = new Image(getClass().getResourceAsStream("/Eggs/S3 Power Egg icon.png"));
-	    ImageView cohozunaIconView = new ImageView(cohozunaIcon);
-	    cohozunaIconView.setFitWidth(100);
-	    cohozunaIconView.setFitHeight(100);	
-	    
-	    Random random = new Random();
-	    int r1 = random.nextInt(100) + 1; //random number between 1 to 100
-	    int r2 = r1 + random.nextInt(100) + 101; //random number between 101 to 200
-	    int rb2 = random.nextInt(3);
-	    String lesser  = lesserNames[rb2];
-	    int r3 = r2 + random.nextInt(100) + 201; //random number between 201 to 300
-	    int rb3 = random.nextInt(6);
-	    String extra  = extraNames[rb3];
-	    int r4 = r3 + random.nextInt(100) + 301; //random number between 301 to 400
-	    int rb4 = random.nextInt(11);
-	    String boss  = bossNames[rb4];
-	    int r5 = r4 + random.nextInt(100) + 401; //random number between 401 to 500
-	    int rb5 = random.nextInt(2);
-	    String king  = kingNames[rb5];
-	    System.out.println("r1: " + r1 + " r2: " + r2 + " r3: " + r3 + " r4: " + r4 + " r5: " + r5);
-	    System.out.println(lesser);
-	    System.out.println(extra);	  
-	    System.out.println(boss);	  
-	    System.out.println(king);
-	    
-	    
-	    System.out.println("hello");
+	    iconView = new ImageView(cohozunaIcon);
+	    iconView.setFitWidth(100);
+	    iconView.setFitHeight(100);	
 	    
 	    // Handle the click on the Cohozuna icon to increase the counter
-	    cohozunaIconView.setOnMouseClicked(e -> {
+	    iconView.setOnMouseClicked(e -> {
 	        eggCount++;
 	        eggCounterLabel.setText("" + eggCount);
 	        if(eggCount > r5)
-	        	cohozunaIconView.setImage(new Image(getClass().getResourceAsStream("/Kings/S3 " + king + " icon.png")));
+	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Kings/S3 " + king + " icon.png")));
 	        else if(eggCount > r4)
-	        	cohozunaIconView.setImage(new Image(getClass().getResourceAsStream("/Bosses/S3 " + boss + " icon.png")));
+	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Bosses/S3 " + boss + " icon.png")));
 	        //else if(eggCount > r3)
-	        //	cohozunaIconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
+	        //	iconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
 	        else if(eggCount > r2)
-	        	cohozunaIconView.setImage(new Image(getClass().getResourceAsStream("/Lessers/S3 " + lesser + " icon.png")));
+	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Lessers/S3 " + lesser + " icon.png")));
 	        else if(eggCount > r1)
-	        	cohozunaIconView.setImage(new Image(getClass().getResourceAsStream("/Eggs/S3 Golden Egg icon.png")));  
+	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Eggs/S3 Golden Egg icon.png")));  
 	        
 	    });
 
-	    tamagoVBox.getChildren().addAll(eggCounterLabel, cohozunaIconView);
+	    tamagoVBox.getChildren().addAll(eggCounterLabel, iconView);
 
 	    Tab tamagoTab = new Tab("Tamago", tamagoVBox);
 
@@ -261,6 +242,43 @@ public class BossCounter extends Application {
 	    eggCounterLabel.setText("" + eggCount);
 
 	    return tamagoTab;
+	}
+	
+	private void generateRandomNumbers() {
+		Random random = new Random();
+	    r1 = random.nextInt(100) + 1; //random number between 1 to 100
+	    r2 = r1 + random.nextInt(100) + 101; //random number between 101 to 200
+	    rb2 = random.nextInt(3);
+	    lesser  = lesserNames[rb2];
+	    r3 = r2 + random.nextInt(100) + 201; //random number between 201 to 300
+	    rb3 = random.nextInt(6);
+	    extra  = extraNames[rb3];
+	    r4 = r3 + random.nextInt(100) + 301; //random number between 301 to 400
+	    rb4 = random.nextInt(11);
+	    boss  = bossNames[rb4];
+	    r5 = r4 + random.nextInt(100) + 401; //random number between 401 to 500
+	    rb5 = random.nextInt(2);
+	    king  = kingNames[rb5];
+	    System.out.println("r1: " + r1 + " r2: " + r2 + " r3: " + r3 + " r4: " + r4 + " r5: " + r5);
+	    System.out.println(lesser);
+	    System.out.println(extra);	  
+	    System.out.println(boss);	  
+	    System.out.println(king);
+	}
+	
+	private void updateTamagoIcon() {
+	    if (eggCount > r5)
+	        iconView.setImage(new Image(getClass().getResourceAsStream("/Kings/S3 " + king + " icon.png")));
+	    else if (eggCount > r4)
+	        iconView.setImage(new Image(getClass().getResourceAsStream("/Bosses/S3 " + boss + " icon.png")));
+	    //else if (eggCount > r3)
+	    //    iconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
+	    else if (eggCount > r2)
+	        iconView.setImage(new Image(getClass().getResourceAsStream("/Lessers/S3 " + lesser + " icon.png")));
+	    else if (eggCount > r1)
+	        iconView.setImage(new Image(getClass().getResourceAsStream("/Eggs/S3 Golden Egg icon.png")));
+	    else
+	        iconView.setImage(new Image(getClass().getResourceAsStream("/Eggs/S3 Power Egg icon.png")));
 	}
 
 	private void saveCountersToFile() {
@@ -330,6 +348,9 @@ public class BossCounter extends Application {
 	                        eggCount = value;
 	                        eggCounterLabel.setText("" + eggCount);
 	                    }
+	                    
+	                 // Set the Tamago icon based on the egg count
+	                    updateTamagoIcon();
 	                }
 	            }
 
@@ -349,6 +370,8 @@ public class BossCounter extends Application {
 	    }
 	    eggCount = 0;
 	    eggCounterLabel.setText("" + eggCount);
+	    iconView.setImage(new Image(getClass().getResourceAsStream("/Eggs/S3 Power Egg icon.png")));
+	    generateRandomNumbers();
 	    saveCountersToFile();
 	    confirmationLabel.setText(" Counters reset to 0!");
 	}
