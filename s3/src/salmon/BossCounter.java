@@ -64,6 +64,7 @@ public class BossCounter extends Application {
 		VBox vbox = new VBox();
 		vbox.setSpacing(5);
 		
+		rollTags();
 		generateRandomNumbers();
 		
 		// Create the File menu
@@ -225,8 +226,8 @@ public class BossCounter extends Application {
 	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Kings/S3 " + king + " icon.png")));
 	        else if(eggCount > r4)
 	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Bosses/S3 " + boss + " icon.png")));
-	        //else if(eggCount > r3)
-	        //	iconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
+	        else if(eggCount > r3)
+	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
 	        else if(eggCount > r2)
 	        	iconView.setImage(new Image(getClass().getResourceAsStream("/Lessers/S3 " + lesser + " icon.png")));
 	        else if(eggCount > r1)
@@ -244,26 +245,27 @@ public class BossCounter extends Application {
 	    return tamagoTab;
 	}
 	
+	private void rollTags() {
+		Random random = new Random();
+	    rb2 = random.nextInt(3);
+	    lesser  = lesserNames[rb2];
+	    rb3 = random.nextInt(6);
+	    extra  = extraNames[rb3];
+	    rb4 = random.nextInt(11);
+	    boss  = bossNames[rb4];
+	    rb5 = random.nextInt(2);
+	    king  = kingNames[rb5];
+		System.out.println("Init Tags: " + lesser + ", " + extra + ", " + boss + ", " + king);
+	}
+	
 	private void generateRandomNumbers() {
 		Random random = new Random();
 	    r1 = random.nextInt(100) + 1; //random number between 1 to 100
-	    r2 = r1 + random.nextInt(100) + 101; //random number between 101 to 200
-	    rb2 = random.nextInt(3);
-	    lesser  = lesserNames[rb2];
-	    r3 = r2 + random.nextInt(100) + 201; //random number between 201 to 300
-	    rb3 = random.nextInt(6);
-	    extra  = extraNames[rb3];
-	    r4 = r3 + random.nextInt(100) + 301; //random number between 301 to 400
-	    rb4 = random.nextInt(11);
-	    boss  = bossNames[rb4];
-	    r5 = r4 + random.nextInt(100) + 401; //random number between 401 to 500
-	    rb5 = random.nextInt(2);
-	    king  = kingNames[rb5];
-	    System.out.println("r1: " + r1 + " r2: " + r2 + " r3: " + r3 + " r4: " + r4 + " r5: " + r5);
-	    System.out.println(lesser);
-	    System.out.println(extra);	  
-	    System.out.println(boss);	  
-	    System.out.println(king);
+	    r2 = random.nextInt(100) + 101; //random number between 101 to 200
+	    r3 = random.nextInt(100) + 201; //random number between 201 to 300
+	    r4 = random.nextInt(100) + 301; //random number between 301 to 400
+	    r5 = random.nextInt(100) + 401; //random number between 401 to 500
+	    System.out.println("Init Limits: " + r1 + ", " + r2 + ", " + r3 + ", " + r4 + ", " + r5);
 	}
 	
 	private void updateTamagoIcon() {
@@ -271,8 +273,8 @@ public class BossCounter extends Application {
 	        iconView.setImage(new Image(getClass().getResourceAsStream("/Kings/S3 " + king + " icon.png")));
 	    else if (eggCount > r4)
 	        iconView.setImage(new Image(getClass().getResourceAsStream("/Bosses/S3 " + boss + " icon.png")));
-	    //else if (eggCount > r3)
-	    //    iconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
+	    else if (eggCount > r3)
+	        iconView.setImage(new Image(getClass().getResourceAsStream("/Extras/S3 " + extra + " icon.png")));
 	    else if (eggCount > r2)
 	        iconView.setImage(new Image(getClass().getResourceAsStream("/Lessers/S3 " + lesser + " icon.png")));
 	    else if (eggCount > r1)
@@ -284,6 +286,11 @@ public class BossCounter extends Application {
 	private void saveCountersToFile() {
 	    String fileName = "counters.txt";
 	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+	    	writer.write("Tags > " + rb2 + "," + rb3 + "," + rb4 + "," + rb5);
+            writer.newLine();
+	    	writer.write("Limits > " + r1 + "," + r2 + "," + r3 + "," + r4 + "," + r5);
+            writer.newLine();
+	    	
 	        for (int i = 0; i < bossNames.length; i++) {
 	            String name = bossNames[i];
 	            String value = labels[i].getText();
@@ -348,11 +355,38 @@ public class BossCounter extends Application {
 	                        eggCount = value;
 	                        eggCounterLabel.setText("" + eggCount);
 	                    }
-	                    
-	                 // Set the Tamago icon based on the egg count
-	                    updateTamagoIcon();
+	                } else if (line.startsWith("Limits >")) {
+	                	String[] limits = line.substring(9).split(",");
+	                	if (limits.length >= 5) {
+	                		r1 = Integer.parseInt(limits[0]);
+	                		r2 = Integer.parseInt(limits[1]);
+	                		r3 = Integer.parseInt(limits[2]);
+	                		r4 = Integer.parseInt(limits[3]);
+	                		r5 = Integer.parseInt(limits[4]);
+	                		System.out.println("Loaded Limits: " + r1 + ", " + r2 + ", " + r3 + ", " + r4 + ", " + r5);
+	                	} else {
+	                		generateRandomNumbers();
+	                	}
+	                } else if (line.startsWith("Tags >")) {
+	                	String[] tags = line.substring(7).split(",");
+	                	if (tags.length >= 4) {
+	                		rb2 = Integer.parseInt(tags[0]);
+	                		rb3 = Integer.parseInt(tags[1]);
+	                		rb4 = Integer.parseInt(tags[2]);
+	                		rb5 = Integer.parseInt(tags[3]);
+	                	    lesser  = lesserNames[rb2];
+	                	    extra  = extraNames[rb3];
+	                	    boss  = bossNames[rb4];
+	                	    king  = kingNames[rb5];
+	                		System.out.println("Loaded Tags: " + lesser + ", " + extra + ", " + boss + ", " + king);
+	                	} else {
+	                		rollTags();
+	                	}
 	                }
 	            }
+                
+	            // Set the Tamago icon based on the egg count
+                updateTamagoIcon();
 
 	            // Update the confirmation label here
 	            confirmationLabel.setText(" Counters loaded successfully!");
@@ -371,6 +405,7 @@ public class BossCounter extends Application {
 	    eggCount = 0;
 	    eggCounterLabel.setText("" + eggCount);
 	    iconView.setImage(new Image(getClass().getResourceAsStream("/Eggs/S3 Power Egg icon.png")));
+	    rollTags();
 	    generateRandomNumbers();
 	    saveCountersToFile();
 	    confirmationLabel.setText(" Counters reset to 0!");
@@ -511,25 +546,24 @@ public class BossCounter extends Application {
 
 		// App description
 		Text descriptionText = new Text(
-				"This is a boss salmonid counter application that helps you track boss counts in Splatoon 3 Salmon Run.");
+				"This is a boss salmonid counter application that helps you track boss counts in Splatoon 3 Salmon Run Next Wave.");
 		descriptionText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
 		descriptionText.setWrappingWidth(400); // Adjust the width as needed
 
-		// Official documentation and GitHub link
 		Hyperlink linksText = new Hyperlink("https://github.com/shachar700/BossCounter");
 		linksText.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
 		linksText.setOnAction(e -> openWebPage(linksText.getText()));
-
-		// Set up HBox for label and URL
-		HBox linksBox = new HBox(5); // Adjust spacing as needed
-		Text officialDoc = new Text("Official Documentation: ");
+		HBox linksBox = new HBox(5); Text officialDoc = new Text("Official Documentation: ");
 		officialDoc.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
-		linksBox.getChildren().addAll(officialDoc, linksText);
-		HBox.setHgrow(officialDoc, Priority.ALWAYS); // Ensure label takes minimum space
+		linksBox.getChildren().addAll(officialDoc, linksText); HBox.setHgrow(officialDoc, Priority.ALWAYS);
 
 		// Changelog
 		TextArea changelogArea = new TextArea("Changelog:\n" + "Version 0.1.0 - July 18th 2023\n"
-				+ "- New features: Save, Load, Reset, Apply,\n" + "- Bug fixes\n" + "- Improvements");
+				+ "New features:\n"
+				+ "- Increase/Decrease boss counters.\n"
+				+ "- Load, Save, and reset progress.\n"
+				+ "- Enter shift counters to the overall counters.\n"
+				+ "- Tamago counter with surprise progressions.");
 		changelogArea.setEditable(false);
 		changelogArea.setWrapText(true);
 		changelogArea.setFont(Font.font("Arial", FontWeight.NORMAL, 14));
