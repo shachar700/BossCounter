@@ -9,4 +9,4 @@ Fun counter of Splatoon 3 Salmon Run Bosses
 
 ## Screenshot
 
-<img src="screenshot_1.png">
+<img src="Screenshot_1.png">
